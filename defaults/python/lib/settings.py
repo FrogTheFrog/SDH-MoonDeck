@@ -18,6 +18,7 @@ class RunnerTimeouts(TypedDict):
     servicePing: int
     initialConditions: int
     streamReadiness: int
+    steamReadiness: int  # TODO add this
     appLaunch: int
     appLaunchStability: int
     appUpdate: int

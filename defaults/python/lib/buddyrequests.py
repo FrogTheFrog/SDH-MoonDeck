@@ -34,6 +34,18 @@ class StreamState(Enum):
     StreamEnding = 2
 
 
+class AppState(Enum):
+    Stopped = 0
+    Running = 1
+    Updating = 2
+    CompilingShaders = 3
+
+
+class StreamedAppData:
+    app_id: int
+    app_state: AppState
+
+
 class ApiVersionResponse(TypedDict):
     version: int
 
@@ -54,14 +66,16 @@ class GamestreamAppNamesResponse(TypedDict):
     appNames: Optional[List[str]]
 
 
-class HostInfoResponse(TypedDict):
-    steamIsRunning: bool
-    steamRunningAppId: int
-    steamTrackedUpdatingAppId: Optional[int]
-    streamState: StreamState
+class StreamStateResponse(TypedDict):
+    state: StreamState
+
+
+class StreamedAppDataResponse(TypedDict):
+    data: Optional[StreamedAppData]
+
 
 OsType = Literal["Windows", "Linux", "Other"]
-class HostPcInfoResponse(TypedDict):
+class HostInfoResponse(TypedDict):
     mac: str
     os: OsType
 
@@ -126,6 +140,11 @@ class BuddyRequests(contextlib.AbstractAsyncContextManager):
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(ResultLikeResponse, data)
 
+    async def get_is_steam_ready(self):
+        async with self.__session.get(f"{self.base_url}/isSteamReady") as resp:
+            data = await resp.json(encoding="utf-8")
+            return utils.from_dict(ResultLikeResponse, data)
+
     async def post_launch_steam_app(self, app_id: int):
         data = {
             "app_id": app_id
@@ -135,12 +154,8 @@ class BuddyRequests(contextlib.AbstractAsyncContextManager):
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(ResultLikeResponse, data)
 
-    async def post_close_steam(self, grace_period: Optional[int]):
-        data = {
-            "grace_period": grace_period
-        }
-
-        async with self.__session.post(f"{self.base_url}/closeSteam", json=data) as resp:
+    async def post_close_steam(self):
+        async with self.__session.post(f"{self.base_url}/closeSteam") as resp:
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(ResultLikeResponse, data)
 
@@ -149,23 +164,12 @@ class BuddyRequests(contextlib.AbstractAsyncContextManager):
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(PcStateResponse, data)
 
-    async def post_change_pc_state(self, state: PcStateChange, grace_period: int):
+    async def post_change_pc_state(self, state: PcStateChange):
         data = {
-            "state": state.name,
-            "grace_period": grace_period
+            "state": state.name
         }
 
         async with self.__session.post(f"{self.base_url}/changePcState", json=data) as resp:
-            data = await resp.json(encoding="utf-8")
-            return utils.from_dict(ResultLikeResponse, data)
-
-    async def post_change_resolution(self, width: int, height: int):
-        data = {
-            "width": width,
-            "height": height
-        }
-
-        async with self.__session.post(f"{self.base_url}/changeResolution", json=data) as resp:
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(ResultLikeResponse, data)
 
@@ -174,10 +178,15 @@ class BuddyRequests(contextlib.AbstractAsyncContextManager):
             data = await resp.json(encoding="utf-8")
             return utils.from_dict(HostInfoResponse, data)
         
-    async def get_host_pc_info(self):
-        async with self.__session.get(f"{self.base_url}/hostPcInfo") as resp:
+    async def get_stream_state(self):
+        async with self.__session.get(f"{self.base_url}/streamState") as resp:
             data = await resp.json(encoding="utf-8")
-            return utils.from_dict(HostPcInfoResponse, data)
+            return utils.from_dict(StreamStateResponse, data)
+        
+    async def get_streamed_app_data(self):
+        async with self.__session.get(f"{self.base_url}/streamedAppData") as resp:
+            data = await resp.json(encoding="utf-8")
+            return utils.from_dict(StreamedAppDataResponse, data)
 
     async def post_end_stream(self):
         async with self.__session.post(f"{self.base_url}/endStream") as resp:

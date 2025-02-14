@@ -128,7 +128,7 @@ class Plugin:
         try:
             state_enum = PcStateChange[state]
             async with BuddyClient(address, buddy_port, client_id, timeout) as client:
-                status = await client.change_pc_state(state_enum, 10)
+                status = await client.change_pc_state(state_enum)
                 if status:
                     logger.error(f"While changing PC state to {state}: {status}")
 
@@ -179,7 +179,7 @@ class Plugin:
     async def close_steam(self, address: str, buddy_port: int, client_id: str, timeout: float):
         try:
             async with BuddyClient(address, buddy_port, client_id, timeout) as client:
-                status = await client.close_steam(None)
+                status = await client.close_steam()
                 if status:
                     logger.error(f"While closing Steam on host PC: {status}")
 

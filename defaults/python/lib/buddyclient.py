@@ -42,14 +42,13 @@ class ChangePcStateResult(Enum):
     Failed = "Failed to change PC state via Buddy!"
 
 
+class IsSteamReadyResult(Enum):
+    Failed = "Failed to get Steam readiness via Buddy!"
+
+
 class LaunchSteamAppResult(Enum):
     BuddyRefused = "Buddy refused to launch Steam app. Check the logs on host!"
     Failed = "Failed to launch Steam app via Buddy!"
-
-
-class ChangeResolutionResult(Enum):
-    BuddyRefused = "Buddy refused to change resolution. Check the logs on host!"
-    Failed = "Failed to change resolution via Buddy!"
 
 
 class GetHostInfoResult(Enum):
@@ -58,6 +57,14 @@ class GetHostInfoResult(Enum):
 
 class GetHostPcInfoResult(Enum):
     Failed = "Failed to get host pc info via Buddy!"
+
+
+class StreamStateResult(Enum):
+    Failed = "Failed to get stream state via Buddy!"
+
+
+class StreamedAppDataResult(Enum):
+    Failed = "Failed to get streamed app data via Buddy!"
 
 
 class EndStreamResult(Enum):
@@ -170,6 +177,16 @@ class BuddyClient(contextlib.AbstractAsyncContextManager):
 
         return await self._try_request(request(), AbortPairingResult.Failed)
 
+    async def is_steam_ready(self):
+        async def request():
+            result = await self.say_hello()
+            if result:
+                return result
+
+            return await self.__requests.get_is_steam_ready()
+
+        return await self._try_request(request(), IsSteamReadyResult.Failed)
+
     async def launch_app(self, app_id: int):
         async def request():
             result = await self.say_hello()
@@ -184,13 +201,13 @@ class BuddyClient(contextlib.AbstractAsyncContextManager):
 
         return await self._try_request(request(), LaunchSteamAppResult.Failed)
 
-    async def close_steam(self, grace_period: Optional[int]):
+    async def close_steam(self):
         async def request():
             result = await self.say_hello()
             if result:
                 return result
 
-            resp = await self.__requests.post_close_steam(grace_period)
+            resp = await self.__requests.post_close_steam()
             if not resp["result"]:
                 return CloseSteamResult.BuddyRefused
 
@@ -198,33 +215,19 @@ class BuddyClient(contextlib.AbstractAsyncContextManager):
 
         return await self._try_request(request(), CloseSteamResult.Failed)
 
-    async def change_pc_state(self, state: PcStateChange, grace_period: int):
+    async def change_pc_state(self, state: PcStateChange):
         async def request():
             result = await self.say_hello()
             if result:
                 return result
 
-            resp = await self.__requests.post_change_pc_state(state, grace_period)
+            resp = await self.__requests.post_change_pc_state(state)
             if not resp["result"]:
                 return ChangePcStateResult.BuddyRefused
 
             return None
 
         return await self._try_request(request(), ChangePcStateResult.Failed)
-
-    async def change_resolution(self, width: int, height: int):
-        async def request():
-            result = await self.say_hello()
-            if result:
-                return result
-
-            resp = await self.__requests.post_change_resolution(width, height)
-            if not resp["result"]:
-                return ChangeResolutionResult.BuddyRefused
-
-            return None
-
-        return await self._try_request(request(), ChangeResolutionResult.Failed)
 
     async def get_host_info(self):
         async def request():
@@ -236,15 +239,25 @@ class BuddyClient(contextlib.AbstractAsyncContextManager):
 
         return await self._try_request(request(), GetHostInfoResult.Failed)
     
-    async def get_host_pc_info(self):
+    async def get_stream_state(self):
         async def request():
             result = await self.say_hello()
             if result:
                 return result
 
-            return await self.__requests.get_host_pc_info()
+            return await self.__requests.get_stream_state()
 
-        return await self._try_request(request(), GetHostInfoResult.Failed)
+        return await self._try_request(request(), StreamStateResult.Failed)
+    
+    async def get_streamed_app_data(self):
+        async def request():
+            result = await self.say_hello()
+            if result:
+                return result
+
+            return await self.__requests.get_streamed_app_data()
+
+        return await self._try_request(request(), StreamedAppDataResult.Failed)
 
     async def end_stream(self):
         async def request():

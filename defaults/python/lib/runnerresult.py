@@ -12,12 +12,20 @@ class Result(Enum):
     HostNotSelected = "Host is not selected!"
     Exception = "Unhandled exception!"
     GameStreamDead = "GameStream service not responsing!"
-    AnotherSteamAppIsRunning = "Another Steam App is running!"
+    AnotherSteamAppIsStreaming = "Another Steam App is streaming!"
     StreamFailedToStart = "Stream failed to start!"
+    SteamDidNotReadyUpInTime = "Steam did not reach the \"ready\" state in time!"
     StreamDidNotEnd = "Stream did not end in time!"
+    AppLaunchAborted = "App launch was aborted!"
     AppLaunchFailed = "Failed to launch app in time!"
     MoonlightClosed = "Moonlight has been closed!"
     MoonlightIsNotInstalled = "Moonlight executable/flatpak not found!"
+
+
+class RunnerError(Exception):
+    def __init__(self, result: Enum):
+        super().__init__(result.value)
+        self.result = result
 
 
 def set_result(result: Optional[Enum], log_result=True):

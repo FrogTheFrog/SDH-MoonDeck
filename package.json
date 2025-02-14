@@ -1,6 +1,6 @@
 {
   "name": "moondeck",
-  "version": "1.8.5",
+  "version": "1.9.0",
   "description": "MoonDeck lets you play any of your Steam games via Moonlight without needing to add them to Sunshine first, providing a similar experience to GeForce GameStream or Steam Remote Play.",
   "type": "module",
   "scripts": {
