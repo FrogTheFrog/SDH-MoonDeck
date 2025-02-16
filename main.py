@@ -81,7 +81,7 @@ class Plugin:
     async def get_buddy_info(self, address: str, buddy_port: int, client_id: str, timeout: float):
         try:
             async with BuddyClient(address, buddy_port, client_id, timeout) as client:
-                info_or_status = await client.get_host_pc_info()
+                info_or_status = await client.get_host_info()
                 if not isinstance(info_or_status, dict):
                     return {"status": info_or_status.name, "info": None}
 
