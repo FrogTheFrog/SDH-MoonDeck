@@ -110,8 +110,8 @@ async def parse_settings() -> RunnerSettings:
         raise RunnerError(Result.NoAppId)                        
 
     return {
-        "resolution": parse_resolution_settings(),
-        "host_app": parse_host_app_name(),
+        "resolution": parse_resolution_settings(host_settings=host_settings, env_settings=env_settings),
+        "host_app": parse_host_app_name(host_settings=host_settings),
         "hostname": host_settings["hostName"],
         "mac": host_settings["mac"],
         "address": host_settings["address"],

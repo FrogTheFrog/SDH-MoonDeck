@@ -185,6 +185,7 @@ class MoonDeckAppRunner:
                         raise RunnerError(HelloResult.Offline)
                     if not server_status:
                         raise RunnerError(Result.GameStreamDead)
+                    return
 
     @staticmethod
     async def wait_for_initial_conditions(client: BuddyClient, app_id: int, timeouts: RunnerTimeouts):
