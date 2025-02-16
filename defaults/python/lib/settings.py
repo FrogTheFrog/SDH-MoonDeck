@@ -44,7 +44,6 @@ class Dimension(TypedDict):
 class HostResolution(TypedDict):
     automatic: bool
     appResolutionOverride: Literal["CustomResolution", "DisplayResolution", "Native", "Default"]
-    passToBuddy: bool
     passToMoonlight: bool
     useCustomDimensions: bool
     useLinkedDisplays: bool
