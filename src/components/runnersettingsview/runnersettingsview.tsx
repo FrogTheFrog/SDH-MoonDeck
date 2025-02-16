@@ -1,6 +1,6 @@
 import { DialogBody, DialogControlsSection, DialogControlsSectionHeader, Field } from "@decky/ui";
 import { LabelWithIcon, NumericTextInput, ToggleField } from "../shared";
-import { SettingsManager, appLaunchDefault, appLaunchStabilityDefault, appUpdateDefault, buddyRequestsDefault, initialConditionsDefault, networkReconnectAfterSuspendDefault, servicePingDefault, steamLaunchAfterSuspendDefault, steamLaunchDefault, streamEndDefault, streamReadinessDefault, wakeOnLanDefault } from "../../lib";
+import { SettingsManager, appLaunchDefault, appLaunchStabilityDefault, buddyRequestsDefault, initialConditionsDefault, networkReconnectAfterSuspendDefault, servicePingDefault, steamLaunchAfterSuspendDefault, steamLaunchDefault, steamReadinessDefault, streamEndDefault, streamReadinessDefault, wakeOnLanDefault } from "../../lib";
 import { useCurrentHostSettings, useCurrentSettings } from "../../hooks";
 import { FC } from "react";
 import { HostOff } from "../icons";
@@ -88,6 +88,17 @@ export const RunnerSettingsView: FC<Props> = ({ settingsManager }) => {
           />
         </Field>
         <Field
+          label={`steamReadiness (default: ${steamReadinessDefault})`}
+          description="Steam-related readiness timeout. Used for waiting till Steam fully reaches desktop or BPM state."
+          childrenContainerWidth="fixed"
+        >
+          <NumericTextInput
+            min={1}
+            value={hostSettings.runnerTimeouts.steamReadiness}
+            setValue={(value) => settingsManager.updateHost((hostSettings) => { hostSettings.runnerTimeouts.steamReadiness = value; })}
+          />
+        </Field>
+        <Field
           label={`appLaunch (default: ${appLaunchDefault})`}
           description="App launch on host timeout."
           childrenContainerWidth="fixed"
@@ -107,17 +118,6 @@ export const RunnerSettingsView: FC<Props> = ({ settingsManager }) => {
             min={1}
             value={hostSettings.runnerTimeouts.appLaunchStability}
             setValue={(value) => settingsManager.updateHost((hostSettings) => { hostSettings.runnerTimeouts.appLaunchStability = value; })}
-          />
-        </Field>
-        <Field
-          label={`appUpdate (default: ${appUpdateDefault})`}
-          description="Additional app launch timeout when app is updating."
-          childrenContainerWidth="fixed"
-        >
-          <NumericTextInput
-            min={1}
-            value={hostSettings.runnerTimeouts.appUpdate}
-            setValue={(value) => settingsManager.updateHost((hostSettings) => { hostSettings.runnerTimeouts.appUpdate = value; })}
           />
         </Field>
         <Field

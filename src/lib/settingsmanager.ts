@@ -28,6 +28,7 @@ export const buddyRequestsDefault = 5 as const;
 export const servicePingDefault = 5 as const;
 export const initialConditionsDefault = 30 as const;
 export const streamReadinessDefault = 30 as const;
+export const steamReadinessDefault = 60 as const;
 export const appLaunchDefault = 30 as const;
 export const appLaunchStabilityDefault = 15 as const;
 export const appUpdateDefault = 15 as const;
@@ -44,9 +45,9 @@ export interface RunnerTimeouts {
   servicePing: number;
   initialConditions: number;
   streamReadiness: number;
+  steamReadiness: number;
   appLaunch: number;
   appLaunchStability: number;
-  appUpdate: number;
   streamEnd: number;
   wakeOnLan: number;
   steamLaunch: number;
@@ -70,7 +71,6 @@ export interface Dimension {
 export interface HostResolution {
   automatic: boolean;
   appResolutionOverride: typeof appResolutionOverrideValues[number];
-  passToBuddy: boolean;
   passToMoonlight: boolean;
   useCustomDimensions: boolean;
   useLinkedDisplays: boolean;

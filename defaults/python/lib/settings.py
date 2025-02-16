@@ -18,10 +18,9 @@ class RunnerTimeouts(TypedDict):
     servicePing: int
     initialConditions: int
     streamReadiness: int
-    steamReadiness: int  # TODO add this
+    steamReadiness: int
     appLaunch: int
     appLaunchStability: int
-    appUpdate: int
     streamEnd: int
     wakeOnLan: int
     steamLaunch: int
@@ -301,6 +300,12 @@ class SettingsManager:
             for host in data["hostSettings"].keys():
                 if data["hostSettings"][host]["os"] == "Windows":
                     data["hostSettings"][host]["resolution"]["passToBuddy"] = False
+        if data["version"] == 25:
+            data["version"] = 26
+            for host in data["hostSettings"].keys():
+                data["hostSettings"][host]["runnerTimeouts"]["steamReadiness"] = 60
+                del data["hostSettings"][host]["runnerTimeouts"]["appUpdate"]
+                del data["hostSettings"][host]["resolution"]["passToBuddy"]
         return data
 
 

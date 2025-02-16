@@ -27,6 +27,11 @@ class RunnerError(Exception):
         super().__init__(result.value)
         self.result = result
 
+    @staticmethod
+    def maybe_raise(result: Optional[Enum]):
+        if result is not None:
+            raise RunnerError(result)
+
 
 def set_result(result: Optional[Enum], log_result=True):
     try:
