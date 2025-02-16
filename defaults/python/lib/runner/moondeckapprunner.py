@@ -15,7 +15,6 @@ from ..buddyclient import BuddyClient, HelloResult
 class TimedPooler:
 
     def __init__(self, retries: int, error_on_retry_out: Optional[Result] = None, delay: float = 1) -> None:
-        super().__init__()
         self.delay = delay
         self.retries = retries
         self.error_on_retry_out = error_on_retry_out
@@ -27,7 +26,7 @@ class TimedPooler:
 
 class TimedPoolerGenerator:
     def __init__(self, pooler: TimedPooler, *requests) -> None:
-        super().__init__()
+        assert len(requests) > 0
         self.pooler = pooler
         self.requests = requests
 
@@ -51,7 +50,7 @@ class TimedPoolerGenerator:
             if not isinstance(request, dict):
                 raise RunnerError(request)
 
-        return responses     
+        return responses if len(responses) > 1 else responses[0]
 
 
 class MoonDeckAppLauncher:
